@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import SVProgressHUD
 
 class LoginViewController: UIViewController {
     @IBOutlet weak var mailAddressTextField: UITextField!
@@ -17,7 +18,26 @@ class LoginViewController: UIViewController {
     
     //ログインボタンをタップした時に呼ばれるメソッド
     @IBAction func handleLoginButton(_ sender: Any) {
-
+        if let address = mailAddressTextField.text, let password = passwordTextField.text {
+            
+            //アドレスとパスワードのいずれかでも入力されていない時は何もしない
+            if address.isEmpty || password.isEmpty {
+                
+                return
+            }
+            
+            Auth.auth().signIn(withEmail: address, password: password) { user, error in
+                if let error = error {
+                    print("DEBUG_PRINT: " + error.localizedDescription)
+                    return
+                } else {
+                    print("DEBUG_PRINT: ログインに成功しました。")
+                    
+                    //画面を閉じてViewControllerに戻る
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
     }
     
     //アカウント作成ボタンをタップした時に呼ばれるメソッド
